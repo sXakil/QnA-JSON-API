@@ -8,11 +8,20 @@ exports.questions = (req, res) => {
 }
 
 exports.questionById = (req, res) => {
-    db.Question.findById(req.params.id)
+    db.Question.findById(req.params.qnId)
         .populate('qnAnswers')
         .exec((err, question) => {
             if(err) res.send(err)
             res.send(question)
+    })
+}
+
+exports.answers = (req, res) => {
+    db.Question.findById(req.params.qnId)
+        .populate('qnAnswers')
+        .exec((err, question) => {
+            if(err) res.send(err)
+            res.send(question.qnAnswers)
     })
 }
 
