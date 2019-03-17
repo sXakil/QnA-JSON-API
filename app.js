@@ -1,15 +1,14 @@
-const express   = require('express'),
-    app         = express(),
-    bodyParser  = require('body-parser'),
-    GET         = require('./helpers/get'),
-    POST        = require('./helpers/post'),
-    PUT         = require('./helpers/put'),
-    DELETE      = require('./helpers/delete')
+const express       = require('express'),
+    app             = express(),
+    bodyParser      = require('body-parser'),
+    GET             = require('./helpers/get'),
+    POST            = require('./helpers/post'),
+    PUT             = require('./helpers/put'),
+    DELETE          = require('./helpers/delete')
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
-app.set('view engine', 'pug')
 app.use(express.static(__dirname + '/views'))
 app.use((req, res, next) => {
     res.append('Access-Control-Allow-Origin', '*')
@@ -18,25 +17,33 @@ app.use((req, res, next) => {
     next()
 })
 
-/** temporary form for testing */
-app.get('/', (req, res) => {
-    res.render('form')
-})
-
+/** root */
+app.get('/', (req, res) => {res.send('Nothing\'s here')})
 /** get all questions */
 app.get('/qn', GET.questions)
-
 /** get questions by id */
-app.get('/qn/:id', GET.questionById)
-
+app.get('/qn/:qnId', GET.questionById)
+/** get all answers */
+app.get('/qn/:qnId/ans', GET.answers)
 /** get answers by id */
-app.get('/ans/:id', GET.answerById)
+app.get('/qn/:qnId/ans/:ansId', GET.answerById)
+
 
 /** post new question */
 app.post('/', POST.newQuestion)
-
 /** post new answer */
-app.post('/qn/:id', POST.newAnswer)
+app.post('/qn/:qnId', POST.newAnswer)
+
+
+/** update question by id */
+app.put('/qn/:qnId', PUT.questionById)
+/** update answer by id */
+app.put('/qn/:qnId/ans/:ansId', PUT.answerById)
+
+/** delete question by id */
+app.delete('/qn/:qnId', DELETE.questionById)
+/** delete answer by id */
+app.delete('/qn/:qnId/ans/:ansId', DELETE.answerById)
 
 /** listen to port 3000 */
-app.listen(3000, 'localhost', () => {})
+app.listen(3000, 'localhost', () => {console.log("Server started")})
